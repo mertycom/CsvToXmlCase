@@ -20,4 +20,14 @@
             <role>Role4</role>
         </roles>
     </user>
+
+    <user>
+        <username>user3</username>
+        <firstname>Firstname3</firstname>
+        <lastname>Lastname3</lastname>
+        <email>email3@magarsus.com</email>
+        <roles>
+            <role>Role5</role>
+        </roles>
+    </user>
 </users>

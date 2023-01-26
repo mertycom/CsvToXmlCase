@@ -10,12 +10,10 @@ repositories {
 }
 
 dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
-    testImplementation 'junit:junit:4.11'
     implementation 'org.projectlombok:lombok:1.18.24'
     annotationProcessor 'org.projectlombok:lombok:1.18.24'
     implementation 'org.freemarker:freemarker:2.3.31'
+    implementation 'org.jumpmind.symmetric:symmetric-csv:3.5.19'
 }
 
 test {

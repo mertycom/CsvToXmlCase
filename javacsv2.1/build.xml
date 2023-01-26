@@ -13,7 +13,7 @@
 		</javac>
 	</target>
 	<target name="dist" depends="compile" description="generate the distribution">
-		<jar jarfile="javacsv.jar" basedir="${build}" />
+		<jar jarfile="../src/main/resources/javacsv.jar" basedir="${build}" />
 		<delete dir="${build}" />
 	</target>
 </project>

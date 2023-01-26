@@ -5,6 +5,7 @@ import com.magarsus.model.Role;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+import org.jumpmind.symmetric.csv.CsvReader;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -16,51 +17,43 @@ import java.util.Map;
 public class CsvToXmlService {
     private static final String PATH = "src/main/resources";
     private static final String FILE = PATH + "/input.csv";
+    private static String[] header;
 
     public static List<User> read() {
-
+        List<User> userList = new ArrayList<>();
         String exUser = "";
         List<String> lineList = new ArrayList<>();
+        try {
+            CsvReader input = new CsvReader(FILE);
+            if(input.readHeaders()){
+                User user = new User();
+                while (input.readRecord()) {
+                    if(!exUser.equals(input.get("username"))) {
+                        user = User.builder()
+                                .userName(input.get("username"))
+                                .firstName(input.get("firstname"))
+                                .lastName(input.get("lastname"))
+                                .email(input.get("email"))
+                                .build();
+                        userList.add(user);
+                    }
+                    user.addRole(new Role(input.get("role")));
 
-        try (BufferedReader br = new BufferedReader(new FileReader(FILE))) {
-            String line = br.readLine();  // first line contains header data and is ignored.
-            while ((line = br.readLine()) != null) {
-                lineList.add(line);
+                    exUser = input.get("username");
+                }
             }
         } catch (FileNotFoundException ex) {
             System.err.println(FILE + " --> " + ex.getMessage());
-            System.exit(100);
         } catch (IOException ex) {
             System.err.println(FILE + " --> " + ex.getMessage());
-            System.exit(100);
-        }
-
-        List<User> userList = new ArrayList<>();
-        User user = new User();
-        for (String line : lineList) {
-            String[] entry = line.split(",");
-            if (!exUser.equals(entry[0])) {
-                user = User.builder()
-                        .userName(entry[0])
-                        .firstName(entry[1])
-                        .lastName(entry[2])
-                        .email(entry[3])
-                        .build();
-                userList.add(user);
-            }
-            user.addRole(new Role(entry[4]));
-            exUser = entry[0];
         }
         return userList;
     }
 
     public static void write(List<User> userList){
-        /*
-        for (User entity : userList) {
-            System.out.println(entity);
-        }
-        */
-        try {
+
+        try (Writer file = new FileWriter (new File("src/main/resources/FTL.xml"))){
+
             //Freemarker configuration object
             Configuration cfg = new Configuration();
             Template template = cfg.getTemplate("src/main/resources/template.ftl");
@@ -75,10 +68,8 @@ public class CsvToXmlService {
             out.flush();
 
             // File output
-            Writer file = new FileWriter (new File("src/main/resources/FTL.xml"));
             template.process(data, file);
             file.flush();
-            file.close();
 
         } catch (IOException ex) {
             System.err.println(FILE + " --> " + ex.getMessage());
@@ -86,5 +77,4 @@ public class CsvToXmlService {
             System.err.println(FILE + " --> " + ex.getMessage());
         }
     }
-
 }
