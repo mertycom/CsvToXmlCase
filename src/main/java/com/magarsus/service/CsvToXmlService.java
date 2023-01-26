@@ -17,32 +17,33 @@ import java.util.Map;
 public class CsvToXmlService {
     private static final String PATH = "src/main/resources";
     private static final String FILE = PATH + "/input.csv";
-    private static String[] header;
+    private static final String FTL = PATH + "/FTL.xml";
+    private static final String TEMPLATE = PATH + "/template.ftl";
 
     public static List<User> read() {
         List<User> userList = new ArrayList<>();
         String exUser = "";
         List<String> lineList = new ArrayList<>();
         try {
-            CsvReader input = new CsvReader(FILE);
-            if(input.readHeaders()){
+            CsvReader csvReader = new CsvReader(FILE);
+            if(csvReader.readHeaders()){
                 User user = new User();
-                while (input.readRecord()) {
-                    if(!exUser.equals(input.get("username"))) {
+                while (csvReader.readRecord()) {
+                    if(!exUser.equals(csvReader.get("username"))) {
                         user = User.builder()
-                                .userName(input.get("username"))
-                                .firstName(input.get("firstname"))
-                                .lastName(input.get("lastname"))
-                                .email(input.get("email"))
+                                .userName(csvReader.get("username"))
+                                .firstName(csvReader.get("firstname"))
+                                .lastName(csvReader.get("lastname"))
+                                .email(csvReader.get("email"))
                                 .build();
                         userList.add(user);
                     }
-                    user.addRole(new Role(input.get("role")));
+                    user.addRole(new Role(csvReader.get("role")));
 
-                    exUser = input.get("username");
+                    exUser = csvReader.get("username");
                 }
             }
-            input.close();
+            csvReader.close();
         } catch (FileNotFoundException ex) {
             System.err.println(FILE + " --> " + ex.getMessage());
         } catch (IOException ex) {
@@ -53,29 +54,29 @@ public class CsvToXmlService {
 
     public static void write(List<User> userList){
 
-        try (Writer file = new FileWriter (new File("src/main/resources/FTL.xml"))){
+        try (Writer file = new FileWriter (new File(FTL))){
 
             //Freemarker configuration object
             Configuration cfg = new Configuration();
-            Template template = cfg.getTemplate("src/main/resources/template.ftl");
+            Template template = cfg.getTemplate(TEMPLATE);
 
             // Build the data-model
             Map<String, Object> data = new HashMap<String, Object>();
             data.put("users", userList);
 
             // Console output
-            Writer out = new OutputStreamWriter(System.out);
-            template.process(data, out);
-            out.flush();
+            //Writer out = new OutputStreamWriter(System.out);
+            //template.process(data, out);
+            //out.flush();
 
             // File output
             template.process(data, file);
             file.flush();
 
         } catch (IOException ex) {
-            System.err.println(FILE + " --> " + ex.getMessage());
+            System.err.println(FTL + " --> " + ex.getMessage());
         } catch (TemplateException ex) {
-            System.err.println(FILE + " --> " + ex.getMessage());
+            System.err.println(TEMPLATE + " --> " + ex.getMessage());
         }
     }
 }
