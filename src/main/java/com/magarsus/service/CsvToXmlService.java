@@ -23,7 +23,6 @@ public class CsvToXmlService {
         List<String> lineList = new ArrayList<>();
 
         try (BufferedReader br = new BufferedReader(new FileReader(FILE))) {
-
             String line = br.readLine();  // first line contains header data and is ignored.
             while ((line = br.readLine()) != null) {
                 lineList.add(line);
@@ -41,7 +40,12 @@ public class CsvToXmlService {
         for (String line : lineList) {
             String[] entry = line.split(",");
             if (!exUser.equals(entry[0])) {
-                user = User.builder().userName(entry[0]).firstName(entry[1]).lastName(entry[2]).email(entry[3]).build();
+                user = User.builder()
+                        .userName(entry[0])
+                        .firstName(entry[1])
+                        .lastName(entry[2])
+                        .email(entry[3])
+                        .build();
                 userList.add(user);
             }
             user.addRole(new Role(entry[4]));
@@ -71,7 +75,7 @@ public class CsvToXmlService {
             out.flush();
 
             // File output
-            Writer file = new FileWriter (new File("src/main/resources/FTL_helloworld.xml"));
+            Writer file = new FileWriter (new File("src/main/resources/FTL.xml"));
             template.process(data, file);
             file.flush();
             file.close();

@@ -1,6 +1,5 @@
 <#ftl output_format="XML">
-<#list users as user>
-<users>
+<users><#list users as user>
     <user>
         <username>${user.userName}</username>
         <firstname>${user.firstName}</firstname>
@@ -12,5 +11,5 @@
             </#list>
         </roles>
     </user>
+    </#list>
 </users>
-</#list>

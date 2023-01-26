@@ -9,8 +9,7 @@
             <role>Role2</role>
         </roles>
     </user>
-</users>
-<users>
+
     <user>
         <username>user2</username>
         <firstname>Firstname2</firstname>
