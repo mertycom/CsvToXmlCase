@@ -42,6 +42,7 @@ public class CsvToXmlService {
                     exUser = input.get("username");
                 }
             }
+            input.close();
         } catch (FileNotFoundException ex) {
             System.err.println(FILE + " --> " + ex.getMessage());
         } catch (IOException ex) {
