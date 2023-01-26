@@ -76,10 +76,10 @@ public class CsvToXmlService {
             file.flush();
             file.close();
 
-        } catch (IOException e) {
-        e.printStackTrace();
-        } catch (TemplateException e) {
-            e.printStackTrace();
+        } catch (IOException ex) {
+            System.err.println(FILE + " --> " + ex.getMessage());
+        } catch (TemplateException ex) {
+            System.err.println(FILE + " --> " + ex.getMessage());
         }
     }
 
